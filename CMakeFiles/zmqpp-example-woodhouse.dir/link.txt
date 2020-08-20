@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11  -Wall -pedantic -Wextra  -rdynamic CMakeFiles/zmqpp-example-woodhouse.dir/examples/woodhouse.cpp.o  -o zmqpp-example-woodhouse  -Wl,-rpath,/home/dmarsden/dev/zmqpp:/usr/local/lib: libzmqpp.so -lpthread /usr/local/lib/libzmq.so 

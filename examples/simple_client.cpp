@@ -10,6 +10,7 @@
 #include <zmqpp/zmqpp.hpp>
 #include <string>
 #include <iostream>
+#include <chrono>
 
 using namespace std;
 
@@ -28,12 +29,17 @@ int main(int argc, char *argv[]) {
   socket.connect(endpoint);
 
   // send a message
-  cout << "Sending text and a number..." << endl;
-  zmqpp::message message;
-  // compose a message from a string and a number
-  message << "Hello World!" << 42;
-  socket.send(message);
-  
-  cout << "Sent message." << endl;
+  cout << "Sending messages..." << endl;
+  auto start = std::chrono::system_clock::now();
+  for (auto i = 0u; i < 10000; i++)
+  {
+    zmqpp::message message;
+    // compose a message from a string and a number
+    message << "Test" << i;
+    socket.send(message);
+  }
+  auto end = std::chrono::system_clock::now();
+  std::cout << "Time to send: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+          << "(ms)\n";  
   cout << "Finished." << endl;
 }

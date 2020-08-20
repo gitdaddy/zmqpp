@@ -7,35 +7,128 @@
  * Copyright (c) 2011-2015 Contributors as noted in the AUTHORS file.
  */
 
-#include <zmqpp/zmqpp.hpp>
-#include <string>
+#include <cassert>
 #include <iostream>
+#include <thread>
+#include <string>
+#include <zmqpp/zmqpp.hpp>
 
-using namespace std;
+const uint64_t NUM_MESSAGES = 10000;
 
-int main(int argc, char *argv[]) {
-  const string endpoint = "tcp://*:4242";
+namespace 
+{
+  void overTCP()
+  {
+    const std::string endpoint = "tcp://*:4242";
 
-  // initialize the 0MQ context
-  zmqpp::context context;
+    // initialize the 0MQ context
+    zmqpp::context context;
 
-  // generate a pull socket
-  zmqpp::socket_type type = zmqpp::socket_type::pull;
-  zmqpp::socket socket (context, type);
+    // generate a pull socket
+    zmqpp::socket socket (context, zmqpp::socket_type::pull);
 
-  // bind to the socket
-  cout << "Binding to " << endpoint << "..." << endl;
-  socket.bind(endpoint);
+    // bind to the socket
+    std::cout << "Binding tcp endpoint to " << endpoint << "..." << std::endl;
+    socket.bind(endpoint);
 
-  // receive the message
-  cout << "Receiving message..." << endl;
-  zmqpp::message message;
-  // decompose the message 
-  socket.receive(message);
-  string text;
-  int number;
-  message >> text >> number;
+    // receive the message
+    std::cout << "Receiving messages..." << std::endl;
+    auto start = std::chrono::system_clock::now();
+    bool firstLoop = true;
+    for (auto i = 0u; i < NUM_MESSAGES; i++)
+    {
+      zmqpp::message message;
+      // decompose the message 
+      socket.receive(message);
 
-  cout << "Received text:\"" << text << "\" and a number: " << number << endl;
-  cout << "Finished." << endl;
+      if (firstLoop)
+      {
+        firstLoop = false;
+        start = std::chrono::system_clock::now();
+      }
+
+      std::string text;
+      int number;
+      message >> text >> number;
+      // std::cout << "Received text:\"" << text << "\" and a number: " << number;
+    }
+    auto end = std::chrono::system_clock::now();
+    std::cout << "Time to recieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+            << "(ms)\n";  
+  }
+
+  void overInproc()
+  {
+    std::cout << "Building inproc test..." << std::endl;
+    // initialize the 0MQ context
+    zmqpp::context context;
+
+    std::string inprocAddress1("inproc://endpoint_1");
+    
+    // isDoneFut.wait();
+    auto send = [&rCtx = context, inprocAddress1](){
+      zmqpp::socket socket(rCtx, zmqpp::socket_type::push);
+      auto rc = zmq_connect(socket, inprocAddress1.c_str());
+      assert(rc == 0);
+      // send data
+      std::cout << "Sending messages..." << std::endl;
+      auto start = std::chrono::system_clock::now();
+      for (auto i = 0u; i < NUM_MESSAGES; i++)
+      {
+        zmqpp::message message;
+        // compose a message from a string and a number
+        message << "Test" << i;
+        socket.send(message);
+      }
+      auto end = std::chrono::system_clock::now();
+      std::cout << "Time to send: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+              << "(ms)\n";  
+    };
+    
+    std::thread sendThread(send);
+
+    // generate a recieve socket
+    zmqpp::socket socket(context, zmqpp::socket_type::pull);
+    socket.bind(inprocAddress1);
+    // recieve data
+    std::cout << "Receiving messages..." << std::endl;
+    auto start = std::chrono::system_clock::now();
+    bool firstLoop = true;
+    for (auto i = 0u; i < NUM_MESSAGES; i++)
+    {
+      zmqpp::message message;
+      // decompose the message 
+      socket.receive(message);
+
+      if (firstLoop)
+      {
+        firstLoop = false;
+        start = std::chrono::system_clock::now();
+      }
+
+      std::string text;
+      int number;
+      message >> text >> number;
+      // std::cout << "Received text:\"" << text << "\" and a number: " << number;
+    }
+    auto end = std::chrono::system_clock::now();
+    std::cout << "Time to recieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+            << "(ms)\n";  
+
+    sendThread.join();
+  }
+}
+
+int main(int argc, char */*argv[]*/) {
+
+  // if there is any other flag or argument run of inproc
+  if (argc > 1)
+  {
+    overInproc();
+  }
+  else 
+  {
+    overTCP();
+  }
+  return 0;
 }

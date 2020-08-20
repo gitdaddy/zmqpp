@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11  -Wall -pedantic -Wextra  -rdynamic CMakeFiles/zmqpp-example-simple_client.dir/examples/simple_client.cpp.o  -o zmqpp-example-simple_client  -Wl,-rpath,/home/dmarsden/dev/zmqpp:/usr/local/lib: libzmqpp.so -lpthread /usr/local/lib/libzmq.so 

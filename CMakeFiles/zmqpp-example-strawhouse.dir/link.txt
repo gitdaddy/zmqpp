@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11  -Wall -pedantic -Wextra  -rdynamic CMakeFiles/zmqpp-example-strawhouse.dir/examples/strawhouse.cpp.o  -o zmqpp-example-strawhouse  -Wl,-rpath,/home/dmarsden/dev/zmqpp:/usr/local/lib: libzmqpp.so -lpthread /usr/local/lib/libzmq.so 

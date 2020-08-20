@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11  -Wall -pedantic -Wextra  -rdynamic CMakeFiles/zmqpp-example-ironhouse2.dir/examples/ironhouse2.cpp.o  -o zmqpp-example-ironhouse2  -Wl,-rpath,/home/dmarsden/dev/zmqpp:/usr/local/lib: libzmqpp.so -lpthread /usr/local/lib/libzmq.so 

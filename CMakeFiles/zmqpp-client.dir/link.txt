@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11  -Wall -pedantic -Wextra  -rdynamic CMakeFiles/zmqpp-client.dir/src/client/main.cpp.o CMakeFiles/zmqpp-client.dir/src/client/options.cpp.o  -o zmqpp-client  -Wl,-rpath,/home/dmarsden/dev/zmqpp:/usr/local/lib: libzmqpp.so /opt/extern/externpro-20.06.1-gcc750-64-Linux/lib/libboost_program_options-gcc75-mt-s-x64-1_67.a /usr/local/lib/libzmq.so 
