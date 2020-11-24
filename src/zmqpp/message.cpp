@@ -487,6 +487,7 @@ void message::release_callback(void* data, void* hint)
 
 bool message::is_signal() const
 {
+	// std::cout << "parts:" << parts() << "size:" << sizeof(signal);
     if (parts() == 1 && size(0) == sizeof(signal))
     {
         signal s;
