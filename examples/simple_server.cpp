@@ -123,23 +123,25 @@ namespace
     sendThread.join();
   }
 
-  void overIPCServer()
+  void overIPCServer(uint64_t numMessages)
   {
      //  Prepare our context and socket
     zmqpp::context context;
-    zmqpp::socket socket (context, zmqpp::socket_type::rep);
+    zmqpp::socket socket (context, zmqpp::socket_type::push);
+    // zmqpp::socket socket (context, zmqpp::socket_type::rep);
     //socket.bind ("tcp://*:5555");
     socket.bind(IPC_ENDPOINT);
 
-    while (true) 
+    // while (true) // rep only
+    for (auto i = 0u; i < numMessages; i++)
     {
-      zmqpp::message request;
+      // zmqpp::message request;
 
       // std::cout << "waiting to recieve" << std::endl;
       //  Wait for next request from client
-      socket.receive(request);
-      std::string data;
-      request >> data;
+      // socket.receive(request);
+      // std::string data;
+      // request >> data;
       // std::cout << "Received: " << data << std::endl;
 
       //  Do some 'work'
@@ -147,9 +149,9 @@ namespace
 
       // std::cout << "sending reply msg" << std::endl;
       //  Send reply signal back to client
-      zmqpp::message reply;
-      reply << "confirm";
-      socket.send(reply);
+      zmqpp::message msg;
+      msg << "confirm";
+      socket.send(msg);
     }
   }
 }
@@ -181,7 +183,7 @@ int main(int argc, char *argv[]) {
   // if there is any other flag or argument run of inproc
   if (input1 == "-ipc")
   {
-    overIPCServer();
+    overIPCServer(numMessages);
   }
   else if (input1 == "-inproc")
   {

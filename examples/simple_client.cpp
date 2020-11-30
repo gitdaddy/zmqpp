@@ -58,9 +58,10 @@ namespace
   }
 
   void overIPCClient(uint64_t numMessages, std::string const& data)
-{
+  {
     zmqpp::context context;
-    zmqpp::socket socket (context, zmqpp::socket_type::req);
+    zmqpp::socket socket (context, zmqpp::socket_type::pull);
+    // zmqpp::socket socket (context, zmqpp::socket_type::req);
     //socket.bind ("tcp://*:5555");
     socket.connect(IPC_ENDPOINT);
 
@@ -69,13 +70,13 @@ namespace
 
     for (auto i = 0u; i < numMessages; i++)
     {
-      zmqpp::message packet;
-      packet << data;
+      // zmqpp::message packet;
+      // packet << data;
       // vs 
       // packet.add_raw(data.data(), data.size());
       
       // printf ("Sending packet %d…\n", i);
-      socket.send(packet); // options?
+      // socket.send(packet); // options?
 
       if (firstLoop)
       {
@@ -83,14 +84,14 @@ namespace
         start = std::chrono::system_clock::now();
       }
 
-      std::cout << " " << i;
+      // std::cout << " " << i;
 
       //  receive reply back to server
-      zmqpp::message reply;
-      // std::cout << "waiting for reply\n";
-      socket.receive(reply);
+      zmqpp::message msg;
+      // std::cout << "waiting for msg\n";
+      socket.receive(msg);
       std::string data;
-      reply >> data;
+      msg >> data;
       // std::cout << "Reply data: " << data << std::endl;
     }
     socket.close();
