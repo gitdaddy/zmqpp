@@ -138,7 +138,7 @@ client_options process_command_line(int argc, char const* argv[])
 	return options;
 }
 
-std::ostream& show_usage(std::ostream& stream, std::string const& application_name)
+std::ostream& show_usage(std::ostream& stream, std::string const& /* application_name */)
 {
 	stream << "Usage: " BUILD_CLIENT_NAME " [options] SOCKETTYPE ENDPOINT" << std::endl;
 	stream << "0mq command line client tool." << std::endl;
