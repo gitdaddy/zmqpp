@@ -13,7 +13,7 @@
 #include <chrono>
 
 // assign ipc to /tmp/ipc_test1
-const std::string IPC_ENDPOINT = "ipc:///tmp/ipc_test1";
+const std::string IPC_ENDPOINT = "ipc://test.pipe";
 
 namespace
 {

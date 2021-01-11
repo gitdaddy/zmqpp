@@ -18,7 +18,7 @@
 #include <zmqpp/zmqpp.hpp>
 
 // assign ipc to /tmp/ipc_test
-const std::string IPC_ENDPOINT = "ipc:///tmp/ipc_test1";
+const std::string IPC_ENDPOINT = "ipc://test.pipe";
 
 namespace
 {
